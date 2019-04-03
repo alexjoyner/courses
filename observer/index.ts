@@ -24,7 +24,7 @@ class WeatherStation implements ObserverSubject {
 		let index = this.observers.indexOf(o);
 		this.observers.splice(index, 1);
 	}
-	private notifyObservers(): void {
+	notifyObservers(): void {
 		this.observers.map(observer => {
 			observer.update(this.temperature);
 		});
@@ -32,7 +32,7 @@ class WeatherStation implements ObserverSubject {
 }
 
 class TemperatureDisplay implements Observer {
-	constructor(weatherStation: ObserverSubject) {
+	constructor(weatherStation: WeatherStation) {
 		weatherStation.registerObserver(this);
 	}
 	update(temperature: number): void {
@@ -41,7 +41,7 @@ class TemperatureDisplay implements Observer {
 }
 
 class Fan implements Observer {
-	constructor(weatherStation: ObserverSubject) {
+	constructor(weatherStation: WeatherStation) {
 		weatherStation.registerObserver(this);
 	}
 	update(temperature: number): void {
@@ -55,4 +55,5 @@ let weatherStation = new WeatherStation();
 let temperatureDisplay = new TemperatureDisplay(weatherStation);
 let fan = new Fan(weatherStation);
 
-weatherStation.setTemperature;
+weatherStation.setTemperature(20);
+weatherStation.setTemperature(40);
