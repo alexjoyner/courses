@@ -11,45 +11,40 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var Car = /** @class */ (function () {
-    function Car(description) {
-        this.description = description;
-    }
-    Car.prototype.getDescription = function () {
-        return this.description;
-    };
-    ;
-    return Car;
-}());
-var ModelS = /** @class */ (function (_super) {
-    __extends(ModelS, _super);
+var ModelS = /** @class */ (function () {
     function ModelS() {
-        return _super.call(this, 'ModelS') || this;
     }
+    ModelS.prototype.getDescription = function () {
+        return 'ModelS';
+    };
     ModelS.prototype.cost = function () {
         return 73000;
     };
     return ModelS;
-}(Car));
-var ModelX = /** @class */ (function (_super) {
-    __extends(ModelX, _super);
+}());
+var ModelX = /** @class */ (function () {
     function ModelX() {
-        return _super.call(this, 'ModelX') || this;
     }
+    ModelX.prototype.getDescription = function () {
+        return 'ModelX';
+    };
     ModelX.prototype.cost = function () {
         return 77000;
     };
     return ModelX;
-}(Car));
-var CarOption = /** @class */ (function (_super) {
-    __extends(CarOption, _super);
+}());
+var CarOption = /** @class */ (function () {
     function CarOption(decoratedCar) {
-        var _this = _super.call(this, decoratedCar.getDescription()) || this;
-        _this.decoratedCar = decoratedCar;
-        return _this;
+        this.decoratedCar = decoratedCar;
     }
+    CarOption.prototype.getDescription = function () {
+        return this.decoratedCar.getDescription();
+    };
+    CarOption.prototype.cost = function () {
+        throw this.decoratedCar.cost();
+    };
     return CarOption;
-}(Car));
+}());
 var EnhancedAutoPilot = /** @class */ (function (_super) {
     __extends(EnhancedAutoPilot, _super);
     function EnhancedAutoPilot(car) {
@@ -77,8 +72,7 @@ var WhiteSeats = /** @class */ (function (_super) {
     return WhiteSeats;
 }(CarOption));
 // Implementation
-var basicModelS = new ModelS();
-var myCar = new WhiteSeats(basicModelS);
-myCar = new EnhancedAutoPilot(myCar);
+var baseCar = new ModelX();
+var myCar = new WhiteSeats(baseCar);
 console.log(myCar.getDescription());
 console.log(myCar.cost());
