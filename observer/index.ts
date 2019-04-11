@@ -32,8 +32,10 @@ class WeatherStation implements ObserverSubject {
 }
 
 class TemperatureDisplay implements Observer {
+	private weatherStation: WeatherStation;
 	constructor(weatherStation: WeatherStation) {
-		weatherStation.registerObserver(this);
+		this.weatherStation = weatherStation
+		this.weatherStation.registerObserver(this);
 	}
 	update(temperature: number): void {
 		console.log("Current Temp: ", temperature);
@@ -53,7 +55,8 @@ class Fan implements Observer {
 
 let weatherStation = new WeatherStation();
 let temperatureDisplay = new TemperatureDisplay(weatherStation);
-let fan = new Fan(weatherStation);
+let temperatureDisplay2 = new TemperatureDisplay(weatherStation);
+weatherStation.removeObserver(temperatureDisplay)
 
 weatherStation.setTemperature(20);
 weatherStation.setTemperature(40);

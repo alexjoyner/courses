@@ -25,7 +25,8 @@ var WeatherStation = /** @class */ (function () {
 }());
 var TemperatureDisplay = /** @class */ (function () {
     function TemperatureDisplay(weatherStation) {
-        weatherStation.registerObserver(this);
+        this.weatherStation = weatherStation;
+        this.weatherStation.registerObserver(this);
     }
     TemperatureDisplay.prototype.update = function (temperature) {
         console.log("Current Temp: ", temperature);
@@ -45,6 +46,7 @@ var Fan = /** @class */ (function () {
 }());
 var weatherStation = new WeatherStation();
 var temperatureDisplay = new TemperatureDisplay(weatherStation);
-var fan = new Fan(weatherStation);
+var temperatureDisplay2 = new TemperatureDisplay(weatherStation);
+weatherStation.removeObserver(temperatureDisplay);
 weatherStation.setTemperature(20);
 weatherStation.setTemperature(40);
