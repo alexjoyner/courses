@@ -39,5 +39,66 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
+    // Is this an A instruction, instruction[15] will be 0
+    Not(in=instruction[15], out=AInstruction);
+
+    Or(a=AInstruction, b=instruction[5], out=LoadA);
     // Put your code here:
+    Mux16(a=AluOut, b=instruction, sel=AInstruction, out=AIn);
+    ARegister(in=AIn, load=LoadA, out=AOut, out[0..14]=addressM);
+
+    // If this isn't an A instruction, it is a c instruction
+    Not(in=AInstruction, out=CInstruction);
+
+    Mux16(a=AOut, b=inM, sel=instruction[12], out=AddrOrMem);
+
+    And(a=CInstruction, b=instruction[4], out=LoadD);
+    DRegister(in=AluOut, load=LoadD, out=DOut);
+
+    ALU( 
+        x=DOut, 
+        y=AddrOrMem, 
+        zx=instruction[11], 
+        nx=instruction[10], 
+        zy=instruction[9], 
+        ny=instruction[8], 
+        f=instruction[7], 
+        no=instruction[6], 
+        out=outM, 
+        out=AluOut, 
+        zr=ZeroFlag, 
+        ng=NegativeFlag 
+    );
+
+    And(a=CInstruction, b=instruction[3], out=writeM);
+
+    Not(in=reset, out=NotReset);
+
+    // Jump Conditions
+    Not(in=NegativeFlag, out=PositiveFlag);
+    Not(in=ZeroFlag, out=NotZeroFlag);
+
+    Or(a=PositiveFlag, b=ZeroFlag, out=GtEqFlag);
+    Or(a=NegativeFlag, b=ZeroFlag, out=LtEqFlag);
+    Or(a=PositiveFlag, b=ZeroFlag, out=FlagGE);
+    And(a=PositiveFlag, b=NotZeroFlag, out=GtFlag);
+
+    DMux8Way(in=CInstruction, sel=instruction[0..2], 
+    a=NoJump, b=JGT, c=JEQ, d=JGE, e=JLT, f=JNE, g=JLE, h=JMP);
+
+    And(a=JLT, b=NegativeFlag, out=JumpNegative);
+    And(a=JLE, b=LtEqFlag, out=JumpLtEq);
+    And(a=JEQ, b=ZeroFlag, out=JumpZero);
+    And(a=JNE, b=NotZeroFlag, out=JumpNotZero);
+    And(a=JGT, b=GtFlag, out=JumpGt);
+    And(a=JGE, b=GtEqFlag, out=JumpGtEq);
+
+    Or(a=JumpNegative, b=JumpZero, out=Jump0);
+    Or(a=Jump0, b=JumpNotZero, out=Jump1);
+    Or(a=Jump1, b=JumpGt, out=Jump2);
+    Or(a=Jump2, b=JumpGtEq, out=Jump3);
+    Or(a=Jump3, b=JumpLtEq, out=Jump4);
+    Or(a=Jump4, b=JMP, out=ShouldJump);
+
+    PC(in=AOut, load=ShouldJump, inc=NotReset, reset=reset, out[0..14]=pc);
 }

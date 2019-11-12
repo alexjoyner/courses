@@ -27,5 +27,20 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    /* 
+    HEX 0-3FFF -> Ram "Address bit 15 is 0 and 14 is 0"
+    HEX 4000-5FFF -> Screen "Address bit 15 is 1 and 14 is 0"
+     */
+    DMux4Way(in=load, sel=address[13..14], a=RamSelectLower, b=RamSelectUpper, c=ScreenSelect, d=KbdSelect);
+    
+    Or(a=RamSelectLower, b=RamSelectUpper, out=RamSelect);
+    RAM16K(in=in, load=RamSelect, address=address[0..13], out=RamOut);
+
+    // 
+    Screen(in=in, load=ScreenSelect, address=address[0..12], out=ScreenOut);
+
+    // HEX 6000 -> KeyBoard "Address bits 14 & 15 are both 1"
+    Keyboard(out=KbdOut);
+
+    Mux4Way16(a=RamOut, b=RamOut, c=ScreenOut, d=KbdOut, sel=address[13..14], out=out);
 }
