@@ -7,4 +7,5 @@
 	- [x] Basic CSS 
 	- [x] Applied Visual Design
 	- [x] Applied Accessibility
-	- [ ] Responsive Web Design Principles
+	- [x] Responsive Web Design Principles
+	- [ ] CSS FlexBox
