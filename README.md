@@ -9,4 +9,5 @@
 	- [x] Applied Accessibility
 	- [x] Responsive Web Design Principles
 	- [x] CSS FlexBox
-	- [ ] CSS Grid
+	- [x] CSS Grid
+	- [ ] Responsive Web Design Projects
