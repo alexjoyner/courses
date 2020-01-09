@@ -8,4 +8,5 @@
 	- [x] Applied Visual Design
 	- [x] Applied Accessibility
 	- [x] Responsive Web Design Principles
-	- [ ] CSS FlexBox
+	- [x] CSS FlexBox
+	- [ ] CSS Grid
