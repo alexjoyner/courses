@@ -6,4 +6,5 @@
 	- [x] Basic HTML and HTML 5
 	- [x] Basic CSS 
 	- [x] Applied Visual Design
-	- [ ] Applied Accessibility
+	- [x] Applied Accessibility
+	- [ ] Responsive Web Design Principles
