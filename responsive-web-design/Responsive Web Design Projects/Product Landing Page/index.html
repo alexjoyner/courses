@@ -5,7 +5,44 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<title>Product Landing Page</title>
-		<link rel="stylesheet" href="" />
+		<link rel="stylesheet" href="./style.css" />
 	</head>
-	<body></body>
+	<body>
+		<header id="header">
+			<img src="" alt="" id="header-img" />
+			<nav id="nav-bar">
+				<ul>
+					<li><a href="#features" class="nav-link">Features</a></li>
+					<li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+					<li><a href="#pricing" class="nav-link">Pricing</a></li>
+				</ul>
+			</nav>
+		</header>
+		<form id="form" action="https://www.freecodecamp.com/email-submit">
+			<input
+				type="email"
+				name="email"
+				id="email"
+				placeholder="Enter your email address"
+				required
+			/>
+			<input type="submit" value="GET STARTED" id="submit" />
+		</form>
+		<div class="container">
+			<section id="features"></section>
+			<section id="how-it-works">
+				<iframe
+					width="560"
+					height="315"
+					src="https://www.youtube.com/embed/y8Yv4pnO7qc"
+					frameborder="0"
+					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+					allowfullscreen
+					id="video"
+				></iframe>
+			</section>
+			<section id="pricing"></section>
+		</div>
+		<script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+	</body>
 </html>
