@@ -3,8 +3,9 @@ import { GraphQLServer } from 'graphql-yoga';
 // Type Definitions (schema)
 const typeDefs = `
   type Query {
-    add(a: Float!, b: Float!): Float!
+    add(nums: [Float!]!): Float!
     greeting(name: String!, position: String): String!
+    grades: [Int!]!
     me: User!
     post: Post!
   }
@@ -27,8 +28,13 @@ const typeDefs = `
 // Resolvers
 const resolvers = {
 	Query: {
-		add(parent, { a, b }) {
-			return a + b;
+		grades() {
+			return [100, 100, 59];
+		},
+		add(parent, { nums }) {
+			console.log(nums);
+			if (nums.length === 0) return 0;
+			return nums.reduce((tot, num) => num + tot, 0);
 		},
 		greeting(parent, args, ctx, info) {
 			if (args.name && args.position) {
