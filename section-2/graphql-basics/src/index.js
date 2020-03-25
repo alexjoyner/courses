@@ -2,7 +2,7 @@ import { GraphQLServer } from 'graphql-yoga';
 import uuidv4 from 'uuid/v4';
 
 // Demo User Data
-const users = [
+let users = [
 	{
 		id: '1',
 		name: 'Andrew',
@@ -26,7 +26,7 @@ const users = [
 ];
 
 // Posts Demo Data
-const posts = [
+let posts = [
 	{
 		id: '11',
 		title: 'My Post',
@@ -47,16 +47,23 @@ const posts = [
 		body: 'aksj;dflkja;sdfk squirrel dslkfh;lksdjf;lkjs;fe SQUIRRREL',
 		published: false,
 		author: '2'
+	},
+	{
+		id: '14',
+		title: 'Test post by andrew',
+		body: 'THIS THING NEEDS TO BE DEALT WITH!',
+		published: true,
+		author: '1'
 	}
 ];
 
 // Comments Demo Data
-const comments = [
+let comments = [
 	{
 		id: '21',
 		text: 'What even is life?',
-		author: '1',
-		post: '11'
+		author: '2',
+		post: '14'
 	},
 	{
 		id: '22',
@@ -93,6 +100,7 @@ const typeDefs = `
 
   type Mutation {
     createUser(data: CreateUserInput!): User!
+    deleteUser(id: ID!): User!
     createPost(data: CreatePostInput!): Post!
     createComment(data: CreateCommentInput!): Comment!
   }
@@ -208,6 +216,28 @@ const resolvers = {
 
 			users.push(user);
 			return user;
+		},
+		deleteUser(parent, args) {
+			const userIndex = users.findIndex(user => user.id === args.id);
+			if (userIndex === -1) {
+				throw new Error('User not found');
+			}
+
+			const deletedUsers = users.splice(userIndex, 1);
+
+			posts = posts.filter(post => {
+				const match = post.author === args.id;
+
+				if (match) {
+					// removes all the comments of the users posts
+					comments = comments.filter(comment => comment.post !== post.id);
+				}
+				return !match;
+			});
+			// removes all the comments of the user from other users posts
+			comments = comments.filter(comment => comment.author !== args.id);
+			console.log(comments);
+			return deletedUsers[0];
 		},
 		createPost(parent, args) {
 			const userExists = users.some(user => user.id === args.data.author);
