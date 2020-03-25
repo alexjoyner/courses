@@ -43,6 +43,27 @@ const Comment_Mutation = {
 
 		const deletedComments = db.comments.splice(commentIndex, 1);
 		return deletedComments[0];
+	},
+	updateUser(parent, args, { db }) {
+		const { id, data } = args;
+		const user = db.users.find(user => user.id === id);
+		if (!user) {
+			throw new Error('User not found');
+		}
+		if (typeof data.email === 'string') {
+			const emailTaken = db.users.some(user => user.email === data.email);
+			if (emailTaken) {
+				throw new Error('Email Taken');
+			}
+			user.email = data.email;
+		}
+		if (typeof data.name === 'string') {
+			user.name = data.name;
+		}
+		if (typeof data.age !== 'undefined') {
+			user.age = data.age;
+		}
+		return user;
 	}
 };
 
