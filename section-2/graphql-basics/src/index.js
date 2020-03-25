@@ -46,9 +46,30 @@ const posts = [
 	}
 ];
 
+// Comments Demo Data
+const comments = [
+	{
+		id: '1',
+		text: 'What even is life?'
+	},
+	{
+		id: '2',
+		text: 'Are you coming over?'
+	},
+	{
+		id: '3',
+		text: 'This is a very cool app!'
+	},
+	{
+		id: '4',
+		text: 'There had to be a fourth comment'
+	}
+];
+
 // Type Definitions (schema)
 const typeDefs = `
   type Query {
+    comments(query: String): [Comment!]!
     posts(query: String): [Post!]!
     users(query: String): [User!]!
     add(nums: [Float!]!): Float!
@@ -73,11 +94,24 @@ const typeDefs = `
     published: Boolean!
     author: User!
   }
+
+  type Comment {
+    id: ID!
+    text: String!
+  }
 `;
 
 // Resolvers
 const resolvers = {
 	Query: {
+		comments(parent, args) {
+			if (!args.query) {
+				return comments;
+			}
+			return comments.filter(comment =>
+				comment.text.toLowerCase().includes(args.query.toLowerCase())
+			);
+		},
 		posts(parent, args) {
 			if (!args.query) {
 				return posts;
