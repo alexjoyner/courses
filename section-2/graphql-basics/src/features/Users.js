@@ -1,4 +1,4 @@
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 const User_Query = {
 	users(parent, args, { db }) {
@@ -57,4 +57,46 @@ const User = {
 	}
 };
 
-export { User_Query, User_Mutation, User };
+const UsersFeature = {
+	typeDefs: {
+		mutations: /* GraphQL */ `
+      createUser(data: CreateUserInput!): User!
+      deleteUser(id: ID!): User!
+      updateUser(id: ID!, data: UpdateUserInput!): User!
+    `,
+		queries: /* GraphQL */ `
+      users(query: String): [User!]!
+    `,
+		subscriptions: /* GraphQL */ ``,
+		miscTypes: /* GraphQL */ `
+			input CreateUserInput {
+				name: String!
+				email: String!
+				age: Int
+			}
+			input UpdateUserInput {
+				name: String
+				email: String
+				age: Int
+			}
+			type User {
+				id: ID!
+				name: String!
+				email: String!
+				age: Int
+				posts: [Post!]!
+				comments: [Comment!]!
+			}
+		`
+	},
+	resolvers: {
+		Query: {
+			...User_Query
+		},
+		Mutation: {
+			...User_Mutation
+		},
+		User
+	}
+};
+export { UsersFeature };

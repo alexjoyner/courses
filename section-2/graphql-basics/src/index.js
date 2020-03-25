@@ -1,28 +1,31 @@
-import { GraphQLServer } from 'graphql-yoga';
+import { GraphQLServer, PubSub } from 'graphql-yoga';
 import db from './db';
-import { Comment_Query, Comment_Mutation, Comment } from './features/Comments';
-import { Post_Query, Post_Mutation, Post } from './features/Posts';
-import { User_Query, User_Mutation, User } from './features/Users';
+import { BuildApp, AddFeature } from './utils/AppBuilder';
+import { CommentsFeature } from './features/Comments';
+import { PostsFeature } from './features/Posts';
+import { UsersFeature } from './features/Users';
+import { CountFeature } from './features/Count';
 
-const server = new GraphQLServer({
-	typeDefs: './src/schema.graphql',
-	resolvers: {
-		Query: {
-			...Comment_Query,
-			...Post_Query,
-			...User_Query
-		},
-		Mutation: {
-			...Comment_Mutation,
-			...Post_Mutation,
-			...User_Mutation
-		},
-		Post,
-		User,
-		Comment
+const pubsub = new PubSub();
+let AppObj = {
+	typeDefs: {
+		mutations: ``,
+		queries: ``,
+		subscriptions: ``,
+		miscTypes: ``
 	},
-	context: { db }
-});
+	resolvers: {},
+	context: { db, pubsub }
+};
+
+AppObj = AddFeature(AppObj, CommentsFeature);
+AppObj = AddFeature(AppObj, PostsFeature);
+AppObj = AddFeature(AppObj, UsersFeature);
+AppObj = AddFeature(AppObj, CountFeature);
+
+// console.log(BuildApp(AppObj).resolvers);
+
+const server = new GraphQLServer(BuildApp(AppObj));
 
 server.start(() => {
 	console.log('The server is up!');

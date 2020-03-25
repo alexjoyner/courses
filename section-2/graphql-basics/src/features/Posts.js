@@ -1,4 +1,4 @@
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 const Post_Query = {
 	posts(parent, args, { db }) {
@@ -38,6 +38,22 @@ const Post_Mutation = {
 		db.comments = db.comments.filter(comment => comment.post !== args.id);
 
 		return deletedPosts[0];
+	},
+	updatePost(parent, { id, data }, { db }) {
+		const post = db.posts.find(post => post.id === id);
+		if (!post) {
+			throw new Error('post not found');
+		}
+		if (typeof data.title === 'string') {
+			post.title = data.title;
+		}
+		if (typeof data.body === 'string') {
+			post.body = data.body;
+		}
+		if (typeof data.published === 'boolean') {
+			post.published = data.published;
+		}
+		return post;
 	}
 };
 
@@ -50,4 +66,47 @@ const Post = {
 	}
 };
 
-export { Post_Query, Post_Mutation, Post };
+const PostsFeature = {
+	typeDefs: {
+		mutations: /* GraphQL */ `
+      createPost(data: CreatePostInput!): Post!
+      deletePost(id: ID!): Post!
+      updatePost(id: ID!, data: UpdatePostInput!): Post!
+    `,
+		queries: /* GraphQL */ `
+      posts(query: String): [Post!]!
+    `,
+		subscriptions: /* GraphQL */ ``,
+		miscTypes: /* GraphQL */ `
+			input CreatePostInput {
+				title: String!
+				body: String!
+				published: Boolean!
+				author: ID!
+			}
+			input UpdatePostInput {
+				title: String
+				body: String
+				published: Boolean
+			}
+			type Post {
+				id: ID!
+				title: String!
+				body: String!
+				published: Boolean!
+				author: User!
+				comments: [Comment!]!
+			}
+		`
+	},
+	resolvers: {
+		Query: {
+			...Post_Query
+		},
+		Mutation: {
+			...Post_Mutation
+		},
+		Post
+	}
+};
+export { PostsFeature };

@@ -1,4 +1,4 @@
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 const Comment_Query = {
 	comments(parent, args, { db }) {
@@ -44,26 +44,15 @@ const Comment_Mutation = {
 		const deletedComments = db.comments.splice(commentIndex, 1);
 		return deletedComments[0];
 	},
-	updateUser(parent, args, { db }) {
-		const { id, data } = args;
-		const user = db.users.find(user => user.id === id);
-		if (!user) {
-			throw new Error('User not found');
+	updateComment(parent, { id, data }, { db }) {
+		const comment = db.comments.find(comment => comment.id === id);
+		if (!comment) {
+			throw new Error('comment not found');
 		}
-		if (typeof data.email === 'string') {
-			const emailTaken = db.users.some(user => user.email === data.email);
-			if (emailTaken) {
-				throw new Error('Email Taken');
-			}
-			user.email = data.email;
+		if (typeof data.text === 'string') {
+			comment.text = data.text;
 		}
-		if (typeof data.name === 'string') {
-			user.name = data.name;
-		}
-		if (typeof data.age !== 'undefined') {
-			user.age = data.age;
-		}
-		return user;
+		return comment;
 	}
 };
 
@@ -76,4 +65,43 @@ const Comment = {
 	}
 };
 
-export { Comment_Query, Comment_Mutation, Comment };
+const CommentsFeature = {
+	typeDefs: {
+		mutations: /* GraphQL */ `
+      createComment(data: CreateCommentInput!): Comment!
+      deleteComment(id: ID!): Comment!
+      updateComment(id: ID!, data: UpdateCommentInput!): Comment!
+    `,
+		queries: /* GraphQL */ `
+      comments(query: String): [Comment!]!
+    `,
+		subscriptions: /* GraphQL */ ``,
+		miscTypes: /* GraphQL */ `
+			input CreateCommentInput {
+				text: String!
+				author: ID!
+				post: ID!
+			}
+			input UpdateCommentInput {
+				text: String
+			}
+			type Comment {
+				id: ID!
+				text: String!
+				author: User!
+				post: Post!
+			}
+		`
+	},
+	resolvers: {
+		Query: {
+			...Comment_Query
+		},
+		Mutation: {
+			...Comment_Mutation
+		},
+		Comment
+	}
+};
+
+export { CommentsFeature };
