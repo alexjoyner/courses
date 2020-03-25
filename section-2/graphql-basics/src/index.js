@@ -6,18 +6,21 @@ const users = [
 		id: '1',
 		name: 'Andrew',
 		email: 'andrew@example.com',
-		age: 27
+		age: 27,
+		comments: ['1', '4']
 	},
 	{
 		id: '2',
 		name: 'Sarah',
 		email: 'sarah@example.com',
-		age: 15
+		age: 15,
+		comments: ['2']
 	},
 	{
 		id: '3',
 		name: 'Alex',
-		email: 'alex@example.com'
+		email: 'alex@example.com',
+		comments: ['3']
 	}
 ];
 
@@ -50,19 +53,27 @@ const posts = [
 const comments = [
 	{
 		id: '1',
-		text: 'What even is life?'
+		text: 'What even is life?',
+		author: '1',
+		post: '1'
 	},
 	{
 		id: '2',
-		text: 'Are you coming over?'
+		text: 'Are you coming over?',
+		author: '2',
+		post: '2'
 	},
 	{
 		id: '3',
-		text: 'This is a very cool app!'
+		text: 'This is a very cool app!',
+		author: '3',
+		post: '1'
 	},
 	{
 		id: '4',
-		text: 'There had to be a fourth comment'
+		text: 'There had to be a fourth comment',
+		author: '1',
+		post: '3'
 	}
 ];
 
@@ -85,6 +96,7 @@ const typeDefs = `
     email: String!
     age: Int
     posts: [Post!]!
+    comments: [Comment!]!
   }
 
   type Post {
@@ -93,11 +105,14 @@ const typeDefs = `
     body: String!
     published: Boolean!
     author: User!
+    comments: [Comment!]!
   }
 
   type Comment {
     id: ID!
     text: String!
+    author: User!
+    post: Post!
   }
 `;
 
@@ -159,11 +174,25 @@ const resolvers = {
 	Post: {
 		author(parent, args) {
 			return users.find(user => user.id === parent.id);
+		},
+		comments(parent, args) {
+			return comments.filter(comment => comment.id === parent.id);
 		}
 	},
 	User: {
 		posts(parent) {
 			return posts.filter(post => post.author === parent.id);
+		},
+		comments(parent, args) {
+			return comments.filter(comment => comment.id === parent.id);
+		}
+	},
+	Comment: {
+		author(parent, args) {
+			return users.find(user => user.id === parent.id);
+		},
+		post(parent, args) {
+			return posts.find(post => post.id === parent.id);
 		}
 	}
 };
