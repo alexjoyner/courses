@@ -1,35 +1,45 @@
 import { GraphQLServer } from 'graphql-yoga';
 
-// Scalar types - Sting, Boolean, Int, Float, ID
-
 // Type Definitions (schema)
 const typeDefs = `
   type Query {
+    me: User!
+    post: Post!
+  }
+
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+    age: Int
+  }
+
+  type Post {
+    id: ID!
     title: String!
-    price: Float!
-    releaseYear: Int
-    rating: Float
-    inStock: Boolean!
+    body: String!
+    published: Boolean!
   }
 `;
 
 // Resolvers
 const resolvers = {
 	Query: {
-		title() {
-			return 'Back to the future';
+		me() {
+			return {
+				id: '123098',
+				name: 'John',
+				email: 'john@test.com',
+				age: 78
+			};
 		},
-		price() {
-			return 17.5;
-		},
-		releaseYear() {
-			return 1985;
-		},
-		rating() {
-			return 4.99;
-		},
-		inStock() {
-			return true;
+		post() {
+			return {
+				id: '3',
+				title: 'Test Post',
+				body: 'This is my first post from GraphQL',
+				published: false
+			};
 		}
 	}
 };
