@@ -28,21 +28,21 @@ const users = [
 // Posts Demo Data
 const posts = [
 	{
-		id: '1',
+		id: '11',
 		title: 'My Post',
 		body: 'This is my first post from GraphQL',
-		published: false,
+		published: true,
 		author: '3'
 	},
 	{
-		id: '2',
+		id: '12',
 		title: 'Test post 2',
 		body: 'aawfelkj ;lakjkaj we;flj owe foij sdfoj a;slkd',
 		published: false,
 		author: '2'
 	},
 	{
-		id: '3',
+		id: '13',
 		title: 'Blah Blah Blah',
 		body: 'aksj;dflkja;sdfk squirrel dslkfh;lksdjf;lkjs;fe SQUIRRREL',
 		published: false,
@@ -53,28 +53,28 @@ const posts = [
 // Comments Demo Data
 const comments = [
 	{
-		id: '1',
+		id: '21',
 		text: 'What even is life?',
 		author: '1',
-		post: '1'
+		post: '11'
 	},
 	{
-		id: '2',
+		id: '22',
 		text: 'Are you coming over?',
 		author: '2',
-		post: '2'
+		post: '12'
 	},
 	{
-		id: '3',
+		id: '23',
 		text: 'This is a very cool app!',
 		author: '3',
-		post: '1'
+		post: '11'
 	},
 	{
-		id: '4',
+		id: '24',
 		text: 'There had to be a fourth comment',
 		author: '1',
-		post: '3'
+		post: '13'
 	}
 ];
 
@@ -93,6 +93,8 @@ const typeDefs = `
 
   type Mutation {
     createUser(name: String!, email: String!, age: Int): User!
+    createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
+    createComment(text: String!, author: ID!, post: ID!): Comment!
   }
 
   type User {
@@ -191,14 +193,54 @@ const resolvers = {
 
 			users.push(user);
 			return user;
+		},
+		createPost(parent, args) {
+			const userExists = users.some(user => user.id === args.author);
+			if (!userExists) {
+				throw new Error('User not found.');
+			}
+			const post = {
+				id: uuidv4(),
+				title: args.title,
+				body: args.body,
+				published: args.published,
+				author: args.author
+			};
+
+			posts.push(post);
+			console.log(posts);
+
+			return post;
+		},
+		createComment(parent, args) {
+			const userExists = users.some(user => user.id === args.author);
+			const publicPostExists = posts.some(
+				post => post.id === args.post && post.published
+			);
+			if (!userExists) {
+				throw new Error('User not found');
+			}
+			if (!publicPostExists) {
+				throw new Error('Public post not found');
+			}
+
+			const comment = {
+				id: uuidv4(),
+				text: args.text,
+				post: args.post,
+				author: args.author
+			};
+
+			comments.push(comment);
+			return comment;
 		}
 	},
 	Post: {
 		author(parent, args) {
-			return users.find(user => user.id === parent.id);
+			return users.find(user => user.id === parent.author);
 		},
 		comments(parent, args) {
-			return comments.filter(comment => comment.id === parent.id);
+			return comments.filter(comment => comment.post === parent.id);
 		}
 	},
 	User: {
@@ -206,15 +248,15 @@ const resolvers = {
 			return posts.filter(post => post.author === parent.id);
 		},
 		comments(parent, args) {
-			return comments.filter(comment => comment.id === parent.id);
+			return comments.filter(comment => comment.author === parent.id);
 		}
 	},
 	Comment: {
 		author(parent, args) {
-			return users.find(user => user.id === parent.id);
+			return users.find(user => user.id === parent.author);
 		},
 		post(parent, args) {
-			return posts.find(post => post.id === parent.id);
+			return posts.find(post => post.id === parent.post);
 		}
 	}
 };
