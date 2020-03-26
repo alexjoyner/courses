@@ -26,23 +26,28 @@ const Post_Mutation = {
 
 		db.posts.push(post);
 		if (post.published) {
-			pubsub.publish('post', { post });
+			pubsub.publish('post', { post: { mutation: 'CREATED', data: post } });
 		}
 		return post;
 	},
-	deletePost(parent, args, { db }) {
+	deletePost(parent, args, { db, pubsub }) {
 		const postIndex = db.posts.findIndex(post => post.id === args.id);
 		if (postIndex === -1) {
 			throw new Error('Post not found');
 		}
-		const deletedPosts = db.posts.splice(postIndex, 1);
+		const [post] = db.posts.splice(postIndex, 1);
 
 		db.comments = db.comments.filter(comment => comment.post !== args.id);
 
-		return deletedPosts[0];
+		if (post.published) {
+			pubsub.publish('post', { post: { mutation: 'DELETED', data: post } });
+		}
+
+		return post;
 	},
-	updatePost(parent, { id, data }, { db }) {
+	updatePost(parent, { id, data }, { db, pubsub }) {
 		const post = db.posts.find(post => post.id === id);
+		const originalPost = { ...post };
 		if (!post) {
 			throw new Error('post not found');
 		}
@@ -54,6 +59,35 @@ const Post_Mutation = {
 		}
 		if (typeof data.published === 'boolean') {
 			post.published = data.published;
+			if (originalPost.published && !post.published) {
+				pubsub.publish('post', {
+					post: {
+						mutation: 'DELETED',
+						data: originalPost
+					}
+				});
+			} else if (!originalPost.published && post.published) {
+				pubsub.publish('post', {
+					post: {
+						mutation: 'CREATED',
+						data: post
+					}
+				});
+			} else {
+				pubsub.publish('post', {
+					post: {
+						mutation: 'UPDATED',
+						data: post
+					}
+				});
+			}
+		} else if (post.published) {
+			pubsub.publish('post', {
+				post: {
+					mutation: 'UPDATED',
+					data: post
+				}
+			});
 		}
 		return post;
 	}
@@ -87,7 +121,7 @@ const PostsFeature = {
       posts(query: String): [Post!]!
     `,
 		subscriptions: /* GraphQL */ `
-      post: Post!
+      post: PostSubscriptionPayload!
     `,
 		miscTypes: /* GraphQL */ `
 			input CreatePostInput {
@@ -108,6 +142,10 @@ const PostsFeature = {
 				published: Boolean!
 				author: User!
 				comments: [Comment!]!
+			}
+			type PostSubscriptionPayload {
+				mutation: String!
+				data: Post!
 			}
 		`
 	},
