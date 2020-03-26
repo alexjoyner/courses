@@ -144,7 +144,7 @@ const PostsFeature = {
 				comments: [Comment!]!
 			}
 			type PostSubscriptionPayload {
-				mutation: String!
+				mutation: MutationTypes!
 				data: Post!
 			}
 		`

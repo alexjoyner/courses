@@ -11,7 +11,13 @@ let AppObj = {
 		mutations: ``,
 		queries: ``,
 		subscriptions: ``,
-		miscTypes: ``
+		miscTypes: /* GraphQL */ `
+			enum MutationTypes {
+				CREATED
+				UPDATED
+				DELETED
+			}
+		`
 	},
 	resolvers: {},
 	context: { db, pubsub }

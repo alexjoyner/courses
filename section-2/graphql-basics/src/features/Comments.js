@@ -99,7 +99,6 @@ const CommentsFeature = {
     `,
 		subscriptions: /* GraphQL */ `
       comment(postId: ID!): CommentSubscriptionPayload!
-      
     `,
 		miscTypes: /* GraphQL */ `
 			input CreateCommentInput {
@@ -117,7 +116,7 @@ const CommentsFeature = {
 				post: Post!
 			}
 			type CommentSubscriptionPayload {
-				mutation: String!
+				mutation: MutationTypes!
 				data: Comment!
 			}
 		`
