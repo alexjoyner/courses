@@ -4,7 +4,6 @@ import { BuildApp, AddFeature } from './utils/AppBuilder';
 import { CommentsFeature } from './features/Comments';
 import { PostsFeature } from './features/Posts';
 import { UsersFeature } from './features/Users';
-import { CountFeature } from './features/Count';
 
 const pubsub = new PubSub();
 let AppObj = {
@@ -21,7 +20,6 @@ let AppObj = {
 AppObj = AddFeature(AppObj, CommentsFeature);
 AppObj = AddFeature(AppObj, PostsFeature);
 AppObj = AddFeature(AppObj, UsersFeature);
-AppObj = AddFeature(AppObj, CountFeature);
 
 // console.log(BuildApp(AppObj).resolvers);
 
