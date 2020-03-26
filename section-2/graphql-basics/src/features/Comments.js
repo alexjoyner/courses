@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-const Comment_Query = {
+const Query = {
 	comments(parent, args, { db }) {
 		if (!args.query) {
 			return db.comments;
@@ -11,8 +11,8 @@ const Comment_Query = {
 	}
 };
 
-const Comment_Mutation = {
-	createComment(parent, args, { db }) {
+const Mutation = {
+	createComment(parent, args, { db, pubsub }) {
 		const userExists = db.users.some(user => user.id === args.data.author);
 		const publicPostExists = db.posts.some(
 			post => post.id === args.data.post && post.published
@@ -30,6 +30,7 @@ const Comment_Mutation = {
 		};
 
 		db.comments.push(comment);
+		pubsub.publish(`comment-${args.data.post}`, { comment });
 		return comment;
 	},
 	deleteComment(parent, args, { db }) {
@@ -65,6 +66,19 @@ const Comment = {
 	}
 };
 
+const Subscription = {
+	comment: {
+		subscribe(parent, { postId }, { db, pubsub }, info) {
+			const post = db.posts.find(post => post.id === postId && post.published);
+			if (!post) {
+				throw new Error('Post not found');
+			}
+
+			return pubsub.asyncIterator(`comment-${postId}`);
+		}
+	}
+};
+
 const CommentsFeature = {
 	typeDefs: {
 		mutations: /* GraphQL */ `
@@ -75,7 +89,9 @@ const CommentsFeature = {
 		queries: /* GraphQL */ `
       comments(query: String): [Comment!]!
     `,
-		subscriptions: /* GraphQL */ ``,
+		subscriptions: /* GraphQL */ `
+      comment(postId: ID!): Comment!
+    `,
 		miscTypes: /* GraphQL */ `
 			input CreateCommentInput {
 				text: String!
@@ -94,12 +110,9 @@ const CommentsFeature = {
 		`
 	},
 	resolvers: {
-		Query: {
-			...Comment_Query
-		},
-		Mutation: {
-			...Comment_Mutation
-		},
+		Query,
+		Mutation,
+		Subscription,
 		Comment
 	}
 };

@@ -14,7 +14,7 @@ const Post_Query = {
 };
 
 const Post_Mutation = {
-	createPost(parent, args, { db }) {
+	createPost(parent, args, { db, pubsub }) {
 		const userExists = db.users.some(user => user.id === args.data.author);
 		if (!userExists) {
 			throw new Error('User not found.');
@@ -25,7 +25,9 @@ const Post_Mutation = {
 		};
 
 		db.posts.push(post);
-
+		if (post.published) {
+			pubsub.publish('post', { post });
+		}
 		return post;
 	},
 	deletePost(parent, args, { db }) {
@@ -66,6 +68,14 @@ const Post = {
 	}
 };
 
+const Subscription = {
+	post: {
+		subscribe(parent, args, { pubsub }) {
+			return pubsub.asyncIterator('post');
+		}
+	}
+};
+
 const PostsFeature = {
 	typeDefs: {
 		mutations: /* GraphQL */ `
@@ -76,7 +86,9 @@ const PostsFeature = {
 		queries: /* GraphQL */ `
       posts(query: String): [Post!]!
     `,
-		subscriptions: /* GraphQL */ ``,
+		subscriptions: /* GraphQL */ `
+      post: Post!
+    `,
 		miscTypes: /* GraphQL */ `
 			input CreatePostInput {
 				title: String!
@@ -106,6 +118,7 @@ const PostsFeature = {
 		Mutation: {
 			...Post_Mutation
 		},
+		Subscription,
 		Post
 	}
 };

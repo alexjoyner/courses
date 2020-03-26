@@ -18,7 +18,7 @@ const BuildApp = AppObj => {
 		typeof AppObj.typeDefs.queries === 'string' &&
 		/[\S]/.test(AppObj.typeDefs.queries)
 	) {
-		typeDefs += `
+		typeDefs += /* GraphQL */ `
     type Query {
       ${AppObj.typeDefs.queries}
     }`;
@@ -27,7 +27,7 @@ const BuildApp = AppObj => {
 		typeof AppObj.typeDefs.mutations === 'string' &&
 		/[\S]/.test(AppObj.typeDefs.mutations)
 	) {
-		typeDefs += `
+		typeDefs += /* GraphQL */ `
     type Mutation {
       ${AppObj.typeDefs.mutations}
     }`;
@@ -36,7 +36,7 @@ const BuildApp = AppObj => {
 		typeof AppObj.typeDefs.subscriptions === 'string' &&
 		/[\S]/.test(AppObj.typeDefs.subscriptions)
 	) {
-		typeDefs += `
+		typeDefs += /* GraphQL */ `
     type Subscription {
       ${AppObj.typeDefs.subscriptions}
     }`;
