@@ -30,10 +30,12 @@ const Mutation = {
 		};
 
 		db.comments.push(comment);
-		pubsub.publish(`comment-${args.data.post}`, { comment });
+		pubsub.publish(`comment-${args.data.post}`, {
+			comment: { mutation: 'CREATED', data: comment }
+		});
 		return comment;
 	},
-	deleteComment(parent, args, { db }) {
+	deleteComment(parent, args, { db, pubsub }) {
 		const commentIndex = db.comments.findIndex(
 			comment => comment.id === args.id
 		);
@@ -42,8 +44,11 @@ const Mutation = {
 			throw new Error('Comment not found');
 		}
 
-		const deletedComments = db.comments.splice(commentIndex, 1);
-		return deletedComments[0];
+		const [comment] = db.comments.splice(commentIndex, 1);
+		pubsub.publish(`comment-${comment.post}`, {
+			comment: { mutation: 'DELETED', data: comment }
+		});
+		return comment;
 	},
 	updateComment(parent, { id, data }, { db }) {
 		const comment = db.comments.find(comment => comment.id === id);
@@ -53,6 +58,9 @@ const Mutation = {
 		if (typeof data.text === 'string') {
 			comment.text = data.text;
 		}
+		pubsub.publish(`comment-${comment.post}`, {
+			comment: { mutation: 'UPDATED', data: comment }
+		});
 		return comment;
 	}
 };
@@ -90,7 +98,8 @@ const CommentsFeature = {
       comments(query: String): [Comment!]!
     `,
 		subscriptions: /* GraphQL */ `
-      comment(postId: ID!): Comment!
+      comment(postId: ID!): CommentSubscriptionPayload!
+      
     `,
 		miscTypes: /* GraphQL */ `
 			input CreateCommentInput {
@@ -106,6 +115,10 @@ const CommentsFeature = {
 				text: String!
 				author: User!
 				post: Post!
+			}
+			type CommentSubscriptionPayload {
+				mutation: String!
+				data: Comment!
 			}
 		`
 	},
