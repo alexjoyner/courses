@@ -1,86 +1,83 @@
-var Order = /** @class */ (function () {
-    function Order() {
+"use strict";
+class Order {
+    constructor() {
         this.paymentPendingState = new PaymentPendingState(this);
         this.cancelledOrderState = new CancelledOrderState(this);
         this.orderBeingPreparedState = new OrderBeingPreparedState(this);
         this.orderShippedState = new OrderShippedState(this);
         this.currentState = this.paymentPendingState;
     }
-    Order.prototype.setState = function (state) {
+    setState(state) {
         this.currentState = state;
-    };
-    Order.prototype.getCurrentState = function () {
+    }
+    getCurrentState() {
         return this.currentState;
-    };
-    return Order;
-}());
-var CancelledOrderState = /** @class */ (function () {
-    function CancelledOrderState(order) {
+    }
+}
+class CancelledOrderState {
+    constructor(order) {
         this.order = order;
     }
-    CancelledOrderState.prototype.cancelOrder = function () {
+    cancelOrder() {
         console.log('This order is already cancelled');
         this.order.setState(this.order.cancelledOrderState);
-    };
-    CancelledOrderState.prototype.verifyPayment = function () {
+    }
+    verifyPayment() {
         console.log('The order is cancelled, you cannot pay anymore.');
-    };
-    CancelledOrderState.prototype.shipOrder = function () {
+    }
+    shipOrder() {
         console.log('The order is cancelled, you cannot ship it anymore.');
-    };
-    return CancelledOrderState;
-}());
-var PaymentPendingState = /** @class */ (function () {
-    function PaymentPendingState(order) {
+    }
+}
+class PaymentPendingState {
+    constructor(order) {
         this.order = order;
     }
-    PaymentPendingState.prototype.cancelOrder = function () {
+    cancelOrder() {
         console.log('Cancelling your unpaid order...');
         this.order.setState(this.order.cancelledOrderState);
-    };
-    PaymentPendingState.prototype.verifyPayment = function () {
+    }
+    verifyPayment() {
         console.log('Payment verified! Shipping soon.');
         this.order.setState(this.order.orderBeingPreparedState);
-    };
-    PaymentPendingState.prototype.shipOrder = function () {
+    }
+    shipOrder() {
         console.log('Cannot ship order when payment is pending!');
-    };
-    return PaymentPendingState;
-}());
-var OrderBeingPreparedState = /** @class */ (function () {
-    function OrderBeingPreparedState(order) {
+    }
+}
+class OrderBeingPreparedState {
+    constructor(order) {
         this.order = order;
     }
-    OrderBeingPreparedState.prototype.cancelOrder = function () {
+    cancelOrder() {
         console.log('Cancelling your order.. You will be refunded.');
         this.order.setState(this.order.cancelledOrderState);
-    };
-    OrderBeingPreparedState.prototype.verifyPayment = function () {
+    }
+    verifyPayment() {
         console.log('Payment is already verified.');
-    };
-    OrderBeingPreparedState.prototype.shipOrder = function () {
+    }
+    shipOrder() {
         console.log('Shipping your order now..');
         this.order.setState(this.order.orderShippedState);
-    };
-    return OrderBeingPreparedState;
-}());
-var OrderShippedState = /** @class */ (function () {
-    function OrderShippedState(order) {
+    }
+}
+class OrderShippedState {
+    constructor(order) {
         this.order = order;
     }
-    OrderShippedState.prototype.cancelOrder = function () {
+    cancelOrder() {
         console.log('You cannot cancel an order that has been shipped.');
-    };
-    OrderShippedState.prototype.verifyPayment = function () {
+    }
+    verifyPayment() {
         console.log('Payment is already verified');
-    };
-    OrderShippedState.prototype.shipOrder = function () {
+    }
+    shipOrder() {
         console.log('Order is already shipped');
-    };
-    return OrderShippedState;
-}());
-var order = new Order();
+    }
+}
+let order = new Order();
 order.getCurrentState().verifyPayment();
 order.getCurrentState().shipOrder();
 order.getCurrentState().cancelOrder();
 console.log('Order state: ' + order.getCurrentState().constructor.name);
+//# sourceMappingURL=index.js.map
