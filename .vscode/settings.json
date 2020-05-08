@@ -11,7 +11,10 @@
     "**/.gitignore": true,
     "LICENSE": true,
     "yarn.lock": true,
-    "**/node_modules": true
+    "**/node_modules": true,
+    "tsconfig.json": true,
+    "jestconfig.json": true,
+    "package.json": true
   },
   "explorerExclude.backup": null
 }

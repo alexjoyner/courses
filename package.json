@@ -8,6 +8,7 @@
 	"author": "Alex Joyner <alex@voicir.com>",
 	"license": "MIT",
 	"scripts": {
+		"test:watch": "jest --config jestconfig.json --watch",
 		"test": "jest --config jestconfig.json",
 		"coverage": "jest --config jestconfig.json --coverage && .\\coverage\\lcov-report\\index.html",
 		"build": "tsc",
