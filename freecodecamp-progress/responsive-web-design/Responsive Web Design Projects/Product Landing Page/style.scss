@@ -1,0 +1,43 @@
+body {
+	background-color: #eee;
+}
+#header {
+	top: 0;
+	position: fixed;
+	width: 100%;
+	display: flex;
+	padding: 10px 30px;
+	justify-content: space-between;
+	align-items: center;
+	#nav-bar {
+		width: 40vw;
+	}
+	ul {
+		float: right;
+		display: flex;
+	}
+	li {
+		display: inline-block;
+	}
+}
+#header-logo {
+	width: 60vw;
+}
+#header-img {
+	width: 100%;
+	max-width: 300px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.container {
+	display: flex;
+	margin-top: 100px;
+}
+
+@media (max-height: 800px) {
+	p {
+		font-size: 10px;
+	}
+}
