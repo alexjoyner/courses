@@ -1,0 +1,36 @@
+{
+	"name": "featurefull",
+	"version": "0.1.1",
+	"description": "A lightweight framework to quickly build out project features",
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"repository": "https://github.com/alexjoyner/featurefull.git",
+	"author": "Alex Joyner <alex@voicir.com>",
+	"license": "MIT",
+	"scripts": {
+		"test:watch": "jest --config jestconfig.json --watch",
+		"test": "jest --config jestconfig.json",
+		"coverage": "jest --config jestconfig.json --coverage && .\\coverage\\lcov-report\\index.html",
+		"build": "tsc",
+		"prepare": "npm run build",
+		"prepublishOnly": "npm test",
+		"version": "git add -A src",
+		"postversion": "git push && git push --tags"
+	},
+	"devDependencies": {
+		"@types/jest": "^25.2.1",
+		"jest": "^26.0.1",
+		"ts-jest": "^25.4.0",
+		"typescript": "^3.8.3"
+	},
+	"files": [
+		"lib/**/*"
+	],
+	"keywords": [
+		"features",
+		"lightweight",
+		"minimal",
+		"library",
+		"framework"
+	]
+}
