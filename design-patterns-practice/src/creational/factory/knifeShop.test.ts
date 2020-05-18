@@ -1,13 +1,13 @@
-import { KnifeShop } from './knifeShop';
+import { BasicKnifeShop } from './knifeShop';
 import { ChefsKnife, SteakKnife } from './knife';
 
 describe('KnifeShop', () => {
-	let knifeShop: KnifeShop;
+	let knifeShop: BasicKnifeShop;
 	beforeEach(() => {
-		knifeShop = new KnifeShop();
+		knifeShop = new BasicKnifeShop();
 	});
 	it('should create a shop', () => {
-		expect(knifeShop).toBeInstanceOf(KnifeShop);
+		expect(knifeShop).toBeInstanceOf(BasicKnifeShop);
 	});
 	it('should warn of ordering unsupported knives', () => {
 		const makeBadOrder = () => {

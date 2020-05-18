@@ -1,4 +1,4 @@
-import { KnifeShop } from './knifeShop';
+import { BasicKnifeShop } from './knifeShop';
 
 describe('Knife Factory Implementation', () => {
 	// As is mentioned in the docs, in the factory pattern, the client/programmer does not
@@ -6,7 +6,7 @@ describe('Knife Factory Implementation', () => {
 	//   from the shop.  The client still just works directly with the shop.  As is the
 	//   case most of the time in the real world.
 	it('should allow ordering knives', () => {
-		const knifeShop = new KnifeShop();
+		const knifeShop = new BasicKnifeShop();
 		const steakKnife = knifeShop.orderKnife('steak');
 		const status = steakKnife.getState();
 		const result = `The steak knife is ${

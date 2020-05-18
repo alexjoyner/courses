@@ -3,6 +3,7 @@ import { Knife, ChefsKnife, SteakKnife } from './knife';
 interface KnifeFactoryInterface {
 	createKnife(knifeType: string): Knife;
 }
+
 class KnifeFactory implements KnifeFactoryInterface {
 	public createKnife(knifeType: string): Knife {
 		switch (knifeType) {
