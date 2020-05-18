@@ -1,35 +1,35 @@
 interface AccountInterface {
-	deposit(amount: Number): string;
-	withdraw(amount: Number): string;
-	transfer(toAccountNum: Number, amount: Number): string;
-	getAccountNumber(): Number;
+	deposit(amount: number): string;
+	withdraw(amount: number): string;
+	transfer(toAccountNum: number, amount: number): string;
+	getAccountNumber(): number;
 }
 
 abstract class Account implements AccountInterface {
-	protected accountNumber: Number;
+	protected accountNumber: number;
 	constructor() {
 		this.accountNumber = Math.random();
 	}
-	abstract deposit(amount: Number): string;
-	abstract withdraw(amount: Number): string;
-	abstract transfer(toAccountNum: Number, amount: Number): string;
-	abstract getAccountNumber(): Number;
+	abstract deposit(amount: number): string;
+	abstract withdraw(amount: number): string;
+	abstract transfer(toAccountNum: number, amount: number): string;
+	abstract getAccountNumber(): number;
 }
 
 class CheckingAccount extends Account {
 	constructor() {
 		super();
 	}
-	deposit(amount: Number): string {
+	deposit(amount: number): string {
 		return `Deposited $${amount} into Checking Account`;
 	}
-	withdraw(amount: Number): string {
+	withdraw(amount: number): string {
 		return `Withdrew $${amount} from Checking Account`;
 	}
-	transfer(toAccountNum: Number, amount: Number): string {
+	transfer(toAccountNum: number, amount: number): string {
 		return `Transferred $${amount} to account number ${toAccountNum}`;
 	}
-	getAccountNumber(): Number {
+	getAccountNumber(): number {
 		return this.accountNumber;
 	}
 }
@@ -38,16 +38,16 @@ class SavingsAccount extends Account {
 	constructor() {
 		super();
 	}
-	deposit(amount: Number): string {
+	deposit(amount: number): string {
 		return `Deposited $${amount} into Savings Account`;
 	}
-	withdraw(amount: Number): string {
+	withdraw(amount: number): string {
 		return `Withdrew $${amount} from Savings Account`;
 	}
-	transfer(toAccountNum: Number, amount: Number): string {
+	transfer(toAccountNum: number, amount: number): string {
 		return `Transferred $${amount} to account number ${toAccountNum}`;
 	}
-	getAccountNumber(): Number {
+	getAccountNumber(): number {
 		return this.accountNumber;
 	}
 }
@@ -56,18 +56,18 @@ class InvestmentAccount extends Account {
 	constructor() {
 		super();
 	}
-	deposit(amount: Number): string {
+	deposit(amount: number): string {
 		return `Deposited $${amount} into Investment Account`;
 	}
-	withdraw(amount: Number): string {
+	withdraw(amount: number): string {
 		return `Withdrew $${amount} from Investment Account`;
 	}
-	transfer(toAccountNum: Number, amount: Number): string {
+	transfer(toAccountNum: number, amount: number): string {
 		return `Transferred $${amount} to account number ${toAccountNum}`;
 	}
-	getAccountNumber(): Number {
+	getAccountNumber(): number {
 		return this.accountNumber;
 	}
 }
 
-export { CheckingAccount, SavingsAccount, InvestmentAccount };
+export { CheckingAccount, SavingsAccount, InvestmentAccount, Account };
