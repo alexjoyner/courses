@@ -1,23 +1,23 @@
 import { BasicKnifeShop } from './knifeShop';
 import { ChefsKnife, SteakKnife } from './knife';
 
-describe('KnifeShop', () => {
-	let knifeShop: BasicKnifeShop;
+describe('BasicKnifeShop', () => {
+	let basicKnifeShop: BasicKnifeShop;
 	beforeEach(() => {
-		knifeShop = new BasicKnifeShop();
+		basicKnifeShop = new BasicKnifeShop();
 	});
 	it('should create a shop', () => {
-		expect(knifeShop).toBeInstanceOf(BasicKnifeShop);
+		expect(basicKnifeShop).toBeInstanceOf(BasicKnifeShop);
 	});
 	it('should warn of ordering unsupported knives', () => {
 		const makeBadOrder = () => {
-			return knifeShop.orderKnife('Stupid Knife');
+			return basicKnifeShop.orderKnife('Stupid Knife');
 		};
 
 		expect(makeBadOrder).toThrowError("Can't make a Stupid Knife");
 	});
 	it('should should allow ordering a finished chef knife', () => {
-		let chefKnife = knifeShop.orderKnife('chef');
+		let chefKnife = basicKnifeShop.orderKnife('chef');
 		expect(chefKnife).toBeInstanceOf(ChefsKnife);
 		expect(chefKnife.getState()).toEqual({
 			polished: true,
@@ -26,7 +26,7 @@ describe('KnifeShop', () => {
 		});
 	});
 	it('should should allow ordering a finished steak knife', () => {
-		let steakKnife = knifeShop.orderKnife('steak');
+		let steakKnife = basicKnifeShop.orderKnife('steak');
 		expect(steakKnife).toBeInstanceOf(SteakKnife);
 		expect(steakKnife.getState()).toEqual({
 			polished: true,
