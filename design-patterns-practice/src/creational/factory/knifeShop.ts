@@ -1,20 +1,17 @@
 import { ChefsKnife, Knife, SteakKnife } from './knife';
+import { KnifeFactory } from './knifeFactory';
 
 interface KnifeShopInterface {
 	orderKnife(knifeType: string): Knife;
 }
 
 class KnifeShop implements KnifeShopInterface {
+	private factory: KnifeFactory;
+	constructor(knifeFactory: KnifeFactory = new KnifeFactory()) {
+		this.factory = knifeFactory;
+	}
 	public orderKnife(knifeType: string): Knife {
-		let knife: Knife;
-
-		if (knifeType === 'chef') {
-			knife = new ChefsKnife();
-		} else if (knifeType === 'steak') {
-			knife = new SteakKnife();
-		} else {
-			throw new Error(`Can't make a ${knifeType} knife`);
-		}
+		const knife: Knife = this.factory.createKnife(knifeType);
 
 		knife.sharpen();
 		knife.polish();
