@@ -1,6 +1,10 @@
 import { ChefsKnife, Knife, SteakKnife } from './knife';
 
-class KnifeShop {
+interface KnifeShopInterface {
+	orderKnife(knifeType: string): Knife;
+}
+
+class KnifeShop implements KnifeShopInterface {
 	public orderKnife(knifeType: string): Knife {
 		let knife: Knife;
 
